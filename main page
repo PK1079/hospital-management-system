@@ -1,0 +1,105 @@
+import tkinter
+from tkinter import*
+from  tkinter import Tk
+from PIL import Image, ImageTk
+from doc import Doc_info
+from patients import Pat_win
+from acc import Acc_info
+from pharm import pharma_info
+from bldbnk import staff_det
+
+
+
+class hospital:
+    def __init__(self,root):
+        self.root= root
+        self.root.title("Hospital Management System")
+        self.root.geometry("1550x800+0+0")
+        img=Image.open(r"C:\Users\promoth-0101\Desktop\Python\hospital_management_db\main2.jpg" )
+        img1=img.resize((1100, 250))
+        self.photo=ImageTk.PhotoImage(img1)
+
+        lblimg=Label(self.root,image=self.photo,bd=4,relief=RIDGE)
+        lblimg.place(x=0,y=0, width=1100, height=150)
+            
+
+        img2=Image.open(r"C:\Users\promoth-0101\Desktop\Python\hospital_management_db\logo2.png" )
+        img3=img2.resize((180, 140))
+        self.photo1=ImageTk.PhotoImage(img3)
+
+
+        menu_frame = tkinter.Frame(root, bg="black")
+        menu_frame.pack(fill='x', side='top')
+       
+        lblimg1=Label(self.root,image=self.photo1,bd=4,relief=RIDGE)
+        lblimg1.place(relx=1.0, rely=0.0, anchor='ne')
+
+        lbl_title=Label(self.root,text="KPC HOSPITALS",bg="sky blue",fg="white",font=("times new roman",40,"bold"))
+        lbl_title.place(x=0,y=150,width=1350,height=50)
+
+        main_frame=Frame(self.root,bd=4,relief=RIDGE)
+        main_frame.place(x=0,y=200,width=1350,height=620)
+
+        lbl_menu=Label(main_frame,text="MENU",bg="sky blue",fg="black",font=("times new roman",25,"bold"))
+        lbl_menu.place(x=1120,y=0,width=155)
+
+        btn_frame= Frame(main_frame,bd=4,relief=RIDGE)
+        btn_frame.place(x=1120,y=45,width=158,height=250)
+
+        cust_btn=Button(btn_frame,text="DOCTOR",command=self.doc_det,width=10,bg="sky blue",fg="white",font=("times new roman",18,"bold"))
+        cust_btn.grid(row=0,column=0,pady=1)
+
+        cust_btn=Button(btn_frame,text="PATIENTS",command=self.pat_det,width=10,bg="sky blue",fg="white",font=("times new roman",18,"bold"))
+        cust_btn.grid(row=1,column=0,pady=1)
+
+        cust_btn=Button(btn_frame,text="PHARMACY",command=self.phrm_det,width=10,bg="sky blue",fg="white",font=("times new roman",18,"bold"))
+        cust_btn.grid(row=2,column=0,pady=1)
+
+        cust_btn=Button(btn_frame,text="STAFF",command=self.staf_info,width=10,bg="sky blue",fg="white",font=("times new roman",17,"bold"))
+        cust_btn.grid(row=3,column=0,pady=1)
+        
+        cust_btn=Button(btn_frame,text="ACCOUNTS",command=self.acc_det,width=10,bg="sky blue",fg="white",font=("times new roman",18,"bold"))
+        cust_btn.grid(row=4,column=0,pady=1)
+
+
+        img4=Image.open(r"C:\Users\promoth-0101\Desktop\Python\hospital_management_db\hospital.png" )
+        img5=img4.resize((1120, 450))
+        self.photo2=ImageTk.PhotoImage(img5)
+
+        lblimg=Label(main_frame,image=self.photo2,bd=4,relief=RIDGE)
+        lblimg.place(x=0,y=0, width=1120, height=450)
+            
+        img5=Image.open(r"C:\Users\promoth-0101\Desktop\Python\hospital_management_db\images.jpg" )
+        img6=img5.resize((170, 150))
+        self.photo3=ImageTk.PhotoImage(img6)
+
+        lblimg=Label(main_frame,image=self.photo3,bd=4,relief=RIDGE)
+        lblimg.place(x=1125,y=300, width=170, height=150)
+
+
+    def doc_det(self):
+        self.new_window= Toplevel(self.root)
+        self.app=Doc_info(self.new_window)    
+    
+    def pat_det(self):
+        self.new_window1=Toplevel(self.root)
+        self.app1=Pat_win(self.new_window1)
+    def acc_det(self):
+        self.new_window2=Toplevel(self.root)
+        self.app2=Acc_info(self.new_window2)
+    def phrm_det(self):
+        self.new_window3=Toplevel(self.root)
+        self.app3=pharma_info(self.new_window3)
+    def staf_info(self):
+        self.new_window4=Toplevel(self.root)
+        self.app4=staff_det(self.new_window4)
+
+if __name__ == "__main__":
+    root = Tk()
+    obj= hospital(root) 
+    root.mainloop()
+
+
+
+
+    
