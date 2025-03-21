@@ -1,0 +1,202 @@
+from tkinter import *
+from tkinter import Tk
+from tkinter import ttk 
+import mysql.connector
+from tkinter import messagebox
+from PIL import Image, ImageTk
+
+
+class pharma_info:
+    def __init__(self,root):
+        self.root=root
+        self.root.title("PHARMACY")
+        self.root.geometry("1120x405+0+240")
+
+        acclbl=Label(self.root, text="MEDICINE INFORMATION",font=("Times new roman",30,"bold"),bg="sky blue",fg="white",relief=RIDGE)
+        acclbl.place(x=0,y=0,width=1150,height=50)
+
+        img4=Image.open(r"C:\Users\promoth-0101\Desktop\Python\hospital_management_db\logo2.png" )
+        img5=img4.resize((180, 140))
+        self.photo2=ImageTk.PhotoImage(img5)
+
+
+        search_frame=LabelFrame(self.root,bd=2,relief=RIDGE,)
+        search_frame.place(x=0,y=50,width=1150,height=50)        
+
+        search_lbl=Label(search_frame,text="Search",font=("Times new roman",15,"bold"),fg="black",padx=1,pady=3)
+        search_lbl.grid(row=0,column=0)
+
+        self.entry_search_box=ttk.Combobox(search_frame,width=22,font=("times new roman",12,"bold"),state="readonly")
+        self.entry_search_box['values']=("Select","dosage_form","manufacturer")
+        self.entry_search_box.grid(row=0,column=1,padx=10)
+        self.entry_search_box.current(0)
+
+        self.txt_search=Entry(search_frame,font=("times new roman",12,"bold"),bd=1,width=23)
+        self.txt_search.grid(row=0,column=2, padx=10)
+
+        btn_search = Button(search_frame, text="SEARCH",command=self.search_pharma, font=("times new roman", 12, "bold"),bg="red",fg="white")
+        btn_search.grid(row=0, column=3,padx=10)
+
+        btn_display =Button(search_frame, text="DISPLAY ALL",command=self.display_pharma, font=("times new roman", 12, "bold"),bg="red",fg="white")
+        btn_display.grid(row=0, column=4,padx=10)
+
+
+    def search_pharma(self):
+        search_box=self.entry_search_box.get()
+        entry_box=self.txt_search.get()
+
+
+        try:
+            # Connect to the MySQL database
+            connection = mysql.connector.connect(
+                host='localhost',        # Replace with your DB host
+                user='root',             # Replace with your DB username
+                password='PK107119',     # Replace with your DB password
+                database='hospital_management',  # Replace with your database name
+                port=3307
+            )
+            cursor = connection.cursor()
+
+            # Execute SQL query to fetch all records from the Patient table
+            query = f"SELECT * FROM Pharmacy where {search_box.lower().replace(' ', '_')} LIKE '%{entry_box}%' "
+            cursor.execute(query)
+            rows = cursor.fetchall()
+
+    
+            # If no records found, show a message
+            if not rows:
+                messagebox.showinfo("No Data", "No patient data available.")
+                return
+
+            new_window = Toplevel(self.root)
+            new_window.title("Medicine Data")
+            new_window.geometry("1120x270+0+370")
+            # Clear the current rows in the Treeview
+           
+            tree = ttk.Treeview(new_window, columns=("ID", "Name", "Dosage Form", "Strength", "Quantity", "Expiry Date", "Manufacturer", "Selling Price"), show='headings')
+            
+        
+    # Define the column headings
+            tree.heading("ID", text="ID")
+            tree.heading("Name", text="Medication Name")
+            tree.heading("Dosage Form", text="Dosage Form")
+            tree.heading("Strength", text="Strength")
+            tree.heading("Quantity", text="Quantity in Stock")
+            tree.heading("Expiry Date", text="Expiry Date")
+            tree.heading("Manufacturer", text="Manufacturer")
+            tree.heading("Selling Price", text="Selling Price")
+    
+    # Set the column widths
+            tree.column("ID", width=50)
+            tree.column("Name", width=150)
+            tree.column("Dosage Form", width=100)
+            tree.column("Strength", width=100)
+            tree.column("Quantity", width=120)
+            tree.column("Expiry Date", width=100)
+            tree.column("Manufacturer", width=150)
+            tree.column("Selling Price", width=100)
+
+    # Pack the Treeview into the window
+            tree.pack(fill=BOTH, expand=True)
+
+            
+
+            # Insert the retrieved rows into the Treeview
+            for row in rows:
+                tree.insert('', 'end', values=row)
+
+            # Pack the Treeview to the window
+            tree.pack(fill='both', expand=True)
+
+            # Close the database connection
+            cursor.close()
+            connection.close()
+
+        except mysql.connector.Error as err:
+            messagebox.showerror("Database Error", f"Error: {err}")
+
+        scrollbar = ttk.Scrollbar(new_window, orient="vertical", command=tree.yview)
+        tree.configure(yscroll=scrollbar.set)
+        scrollbar.pack(side='right', fill='y')
+    
+    def display_pharma(self):
+        try:
+            # Connect to the MySQL database
+            connection = mysql.connector.connect(
+                host='localhost',        # Replace with your DB host
+                user='root',             # Replace with your DB username
+                password='PK107119',     # Replace with your DB password
+                database='hospital_management',  # Replace with your database name
+                port=3307
+            )
+            cursor = connection.cursor()
+
+            # Execute SQL query to fetch all records from the Patient table
+            query = f"SELECT * FROM Pharmacy "
+            cursor.execute(query)
+            rows = cursor.fetchall()
+
+    
+            # If no records found, show a message
+            if not rows:
+                messagebox.showinfo("No Data", "No patient data available.")
+                return
+
+            new_window = Toplevel(self.root)
+            new_window.title("Medicine Data")
+            new_window.geometry("1120x270+0+370")
+            # Clear the current rows in the Treevi
+        
+
+            tree = ttk.Treeview(new_window, columns=("ID", "Name", "Dosage Form", "Strength", "Quantity", "Expiry Date", "Manufacturer", "Selling Price"), show='headings')
+    
+    # Define the column headings
+            tree.heading("ID", text="ID")
+            tree.heading("Name", text="Medication Name")
+            tree.heading("Dosage Form", text="Dosage Form")
+            tree.heading("Strength", text="Strength")
+            tree.heading("Quantity", text="Quantity in Stock")
+            tree.heading("Expiry Date", text="Expiry Date")
+            tree.heading("Manufacturer", text="Manufacturer")
+            tree.heading("Selling Price", text="Selling Price")
+    
+    # Set the column widths
+            tree.column("ID", width=50)
+            tree.column("Name", width=100)
+            tree.column("Dosage Form", width=100)
+            tree.column("Strength", width=100)
+            tree.column("Quantity", width=100)
+            tree.column("Expiry Date", width=100)
+            tree.column("Manufacturer", width=100)
+            tree.column("Selling Price", width=100)
+
+    # Pack the Treeview into the window
+            tree.pack(fill=BOTH, expand=True)
+
+            
+
+            # Insert the retrieved rows into the Treeview
+            for row in rows:
+                tree.insert('', 'end', values=row)
+
+            # Pack the Treeview to the window
+            tree.pack(fill='both', expand=True)
+
+            # Close the database connection
+            cursor.close()
+            connection.close()
+
+        except mysql.connector.Error as err:
+            messagebox.showerror("Database Error", f"Error: {err}")
+
+        scrollbar = ttk.Scrollbar(new_window, orient="vertical", command=tree.yview)
+        tree.configure(yscroll=scrollbar.set)
+        scrollbar.pack(side='right', fill='y')
+    
+
+
+
+if __name__=="__main__":
+    root=Tk()
+    obj=pharma_info(root)
+    root.mainloop()
